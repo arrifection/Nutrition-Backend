@@ -14,6 +14,7 @@ class UserRegister(BaseModel):
     username: str
     email: EmailStr
     password: str
+    role: str = "client" # Default to client, can be "dietitian"
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -24,6 +25,7 @@ class Token(BaseModel):
     token_type: str
     username: str
     email: str
+    role: str
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     payload = decode_access_token(token)
@@ -61,6 +63,7 @@ async def register(user_data: UserRegister):
         "username": user_data.username,
         "email": user_data.email,
         "password": hashed_password,
+        "role": user_data.role,
         "createdAt": datetime.utcnow()
     }
     
@@ -84,7 +87,8 @@ async def login(user_data: UserLogin):
         "access_token": access_token, 
         "token_type": "bearer",
         "username": user["username"],
-        "email": user["email"]
+        "email": user["email"],
+        "role": user.get("role", "client")
     }
 
 @router.get("/me")

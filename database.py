@@ -65,6 +65,7 @@ def user_helper(user) -> dict:
         "id": str(user["_id"]),
         "username": user["username"],
         "email": user["email"],
+        "role": user.get("role", "client"),
         "createdAt": user.get("createdAt")
     }
 
